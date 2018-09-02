@@ -5,7 +5,7 @@ import { minify } from 'uglify-es'
 export default {
     input: './src/index.js',
     output: {
-        file: 'dist/index.js',
+        file: 'dist/bundle/react-promises.umd.min.js',
         format: 'umd',
         name: 'react-promises',
         globals: {
