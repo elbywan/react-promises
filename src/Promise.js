@@ -35,17 +35,17 @@ export class Promise extends Component {
             throw new Error('Promise function is missing.')
         }
         if(!this.props.skip || (typeof this.props.skip === 'function' && !this.props.skip(this.props))) {
-            this.performPromise()
+            this.executePromise()
         } else {
             this.setState({ pending: false, skipped: true })
         }
     }
 
-    performPromise (options = (this._backedOptions || this.props), mixin = false) {
+    executePromise (options = (this._backedOptions || this.props), { mixin = false, replayed = false } = {}) {
         const { promise } = this.props
         this.setState({ pending: true, skipped: false })
         this._backedOptions = mixin ? { ...options, ...this._backedOptions } : options
-        promise(options)
+        promise(options, { replayed })
             .then(result => {
                 if(typeof this.props.then === 'function') {
                     result = this.props.then(result)
@@ -73,7 +73,7 @@ export class Promise extends Component {
 
         return render({
             ...this.state,
-            replay: (options, mixin = true) => this.performPromise.bind(this)(options, mixin)
+            replay: (options, mixin = true) => this.executePromise.bind(this)(options, { mixin, replayed: true })
         })
 
     }
