@@ -42,19 +42,19 @@ export class Promise extends Component {
     }
 
     executePromise (options = (this._backedOptions || this.props), { mixin = false, replayed = false } = {}) {
-        const { promise } = this.props
+        const { promise, then } = this.props
         this.setState({ pending: true, skipped: false })
         this._backedOptions = mixin ? { ...options, ...this._backedOptions } : options
         promise(options, { replayed })
             .then(result => {
-                if(typeof this.props.then === 'function') {
+                if(typeof then === 'function') {
                     result = this.props.then(result)
                 }
-                this.setState({ result })
+                this.setState({ result, error: null })
                 return result
             })
             .catch(error => {
-                this.setState({ error })
+                this.setState({ error, result: null })
             })
             .then(() => {
                 this.setState({

@@ -79,7 +79,7 @@ function (_Component) {
       }
 
       if (!this.props.skip || typeof this.props.skip === 'function' && !this.props.skip(this.props)) {
-        this.performPromise();
+        this.executePromise();
       } else {
         this.setState({
           pending: false,
@@ -88,31 +88,43 @@ function (_Component) {
       }
     }
   }, {
-    key: "performPromise",
-    value: function performPromise() {
+    key: "executePromise",
+    value: function executePromise() {
       var _this2 = this;
 
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._backedOptions || this.props;
-      var mixin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var promise = this.props.promise;
+
+      var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+          _ref$mixin = _ref.mixin,
+          mixin = _ref$mixin === void 0 ? false : _ref$mixin,
+          _ref$replayed = _ref.replayed,
+          replayed = _ref$replayed === void 0 ? false : _ref$replayed;
+
+      var _this$props = this.props,
+          promise = _this$props.promise,
+          then = _this$props.then;
       this.setState({
         pending: true,
         skipped: false
       });
       this._backedOptions = mixin ? _objectSpread({}, options, this._backedOptions) : options;
-      promise(options).then(function (result) {
-        if (typeof _this2.props.then === 'function') {
+      promise(options, {
+        replayed: replayed
+      }).then(function (result) {
+        if (typeof then === 'function') {
           result = _this2.props.then(result);
         }
 
         _this2.setState({
-          result: result
+          result: result,
+          error: null
         });
 
         return result;
       }).catch(function (error) {
         _this2.setState({
-          error: error
+          error: error,
+          result: null
         });
       }).then(function () {
         _this2.setState({
@@ -135,7 +147,10 @@ function (_Component) {
       return render(_objectSpread({}, this.state, {
         replay: function replay(options) {
           var mixin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-          return _this3.performPromise.bind(_this3)(options, mixin);
+          return _this3.executePromise.bind(_this3)(options, {
+            mixin: mixin,
+            replayed: true
+          });
         }
       }));
     }
