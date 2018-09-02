@@ -48,7 +48,7 @@ export class Promise extends Component {
         promise(options, { replayed })
             .then(result => {
                 if(typeof then === 'function') {
-                    result = this.props.then(result)
+                    result = then(result)
                 }
                 this.setState({ result, error: null })
                 return result
