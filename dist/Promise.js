@@ -112,7 +112,7 @@ function (_Component) {
         replayed: replayed
       }).then(function (result) {
         if (typeof then === 'function') {
-          result = _this2.props.then(result);
+          result = then(result);
         }
 
         _this2.setState({

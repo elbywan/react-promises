@@ -18,6 +18,10 @@
   ],
   "author": "Julien Elbaz",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elbywan/react-promises"
+  },
   "files": [
     "dist",
     "babel.config.js"
