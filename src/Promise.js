@@ -1,15 +1,17 @@
 import React, { Component } from 'react'
 
-export class Promise extends Component {
+export class PromiseComponent extends Component {
 
     constructor (props) {
         super (props)
         this.state = {
-            pending: null,
+            pending: true,
             error: null,
             result: null,
-            skipped: null
+            skipped: false
         }
+        this.setInitialState(props)
+        this.__promiseComponent = true
     }
 
     componentDidMount () {
@@ -41,25 +43,35 @@ export class Promise extends Component {
         }
     }
 
-    executePromise (options = (this._backedOptions || this.props), { mixin = false, replayed = false } = {}) {
+    setInitialState (props) {
+        const { initialValue, then } = props
+        if(!initialValue)
+            return
+        this.state.pending = false
+        if(typeof then === 'function') {
+            this.state.result = then(initialValue)
+        } else {
+            this.state.result = initialValue
+        }
+    }
+
+    executePromise (options = this.props, { mixin = false, replayed = false } = {}) {
         const { promise, then } = this.props
-        this.setState({ pending: true, skipped: false })
-        this._backedOptions = mixin ? { ...options, ...this._backedOptions } : options
-        promise(options, { replayed })
+        const { pending, skipped } = this.state
+        if(!pending || skipped) {
+            this.setState({ pending: true, skipped: false })
+        }
+        this._backedOptions = mixin ? { ...this._backedOptions, ...options } : options
+        return promise(mixin ? this._backedOptions : options, { replayed })
             .then(result => {
                 if(typeof then === 'function') {
                     result = then(result)
                 }
-                this.setState({ result, error: null })
+                this.setState({ result, error: null, pending: false })
                 return result
             })
             .catch(error => {
-                this.setState({ error, result: null })
-            })
-            .then(() => {
-                this.setState({
-                    pending: false
-                })
+                this.setState({ error, result: null, pending: false })
             })
     }
 
@@ -78,3 +90,4 @@ export class Promise extends Component {
 
     }
 }
+PromiseComponent.displayName = 'PromiseComponent'

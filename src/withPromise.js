@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Promise } from './Promise'
+import { PromiseComponent } from './Promise'
 
 export function withPromise({
     skip,
@@ -19,7 +19,7 @@ export function withPromise({
                 )
             }
             return (
-                <Promise
+                <PromiseComponent
                     skip={skip}
                     promise={promise}
                     render={children}

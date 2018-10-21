@@ -5,7 +5,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import React, { Component } from 'react';
-import { Promise } from './Promise';
+import { PromiseComponent } from './Promise';
 export function withPromise(_ref) {
   var skip = _ref.skip,
       promise = _ref.promise,
@@ -22,7 +22,7 @@ export function withPromise(_ref) {
         return React.createElement(Component, mixedProps);
       };
 
-      return React.createElement(Promise, _extends({
+      return React.createElement(PromiseComponent, _extends({
         skip: skip,
         promise: promise,
         render: children,

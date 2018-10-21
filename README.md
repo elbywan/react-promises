@@ -11,7 +11,7 @@ npm i react-promises
 ```
 
 ```js
-import { withPromise, Promise } from 'react-promises'
+import { withPromise, PromiseComponent } from 'react-promises'
 ```
 
 ### Script tag
@@ -21,7 +21,7 @@ import { withPromise, Promise } from 'react-promises'
 ```
 
 ```js
-const { withPromise, Promise } = window['react-promises']
+const { withPromise, PromiseComponent } = window['react-promises']
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ const { withPromise, Promise } = window['react-promises']
 ### Component
 
 ```js
-<Promise
+<PromiseComponent
     // A function returning a promise result.
     promise={ props => promise }
     // An optional transform function applied to the result.
@@ -53,7 +53,6 @@ const { withPromise, Promise } = window['react-promises']
 
 ### Higher Order Component
 
-
 ```js
 withPromise({
     // See above
@@ -69,4 +68,17 @@ withPromise({
     // Returns a new props object.
     props: ({ pending, error, result, skipped }) => transformedProps
 })(WrappedComponent)
+```
+
+### SSR
+
+```js
+import { resolveAll } from 'react-promises'
+
+resolveAll(<MyApp />, { 
+    // Optional, callbacks before / after each promise resolution
+    before, after
+}).then(() => {
+    // All promises have been resolved
+})
 ```

@@ -1,1 +1,1 @@
-{"version":3,"sources":["../src/index.js"],"names":[],"mappings":"AAAA,cAAc,WAAd;AACA,cAAc,eAAd","sourcesContent":["export * from './Promise'\nexport * from './withPromise'"],"file":"index.js"}
+{"version":3,"sources":["../src/index.js"],"names":[],"mappings":"AAAA,cAAc,WAAd;AACA,cAAc,eAAd;AACA,cAAc,cAAd","sourcesContent":["export * from './Promise'\nexport * from './withPromise'\nexport * from './resolveAll'"],"file":"index.js"}

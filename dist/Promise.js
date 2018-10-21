@@ -25,27 +25,31 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 import React, { Component } from 'react';
-export var Promise =
+export var PromiseComponent =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(Promise, _Component);
+  _inherits(PromiseComponent, _Component);
 
-  function Promise(props) {
+  function PromiseComponent(props) {
     var _this;
 
-    _classCallCheck(this, Promise);
+    _classCallCheck(this, PromiseComponent);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Promise).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PromiseComponent).call(this, props));
     _this.state = {
-      pending: null,
+      pending: true,
       error: null,
       result: null,
-      skipped: null
+      skipped: false
     };
+
+    _this.setInitialState(props);
+
+    _this.__promiseComponent = true;
     return _this;
   }
 
-  _createClass(Promise, [{
+  _createClass(PromiseComponent, [{
     key: "componentDidMount",
     value: function componentDidMount() {
       this.onInitAndUpdate();
@@ -64,7 +68,7 @@ function (_Component) {
         args[_key] = arguments[_key];
       }
 
-      if (!this.__unmounted) (_get2 = _get(_getPrototypeOf(Promise.prototype), "setState", this)).call.apply(_get2, [this].concat(args));
+      if (!this.__unmounted) (_get2 = _get(_getPrototypeOf(PromiseComponent.prototype), "setState", this)).call.apply(_get2, [this].concat(args));
     }
   }, {
     key: "componentDidUpdate",
@@ -88,11 +92,25 @@ function (_Component) {
       }
     }
   }, {
+    key: "setInitialState",
+    value: function setInitialState(props) {
+      var initialValue = props.initialValue,
+          then = props.then;
+      if (!initialValue) return;
+      this.state.pending = false;
+
+      if (typeof then === 'function') {
+        this.state.result = then(initialValue);
+      } else {
+        this.state.result = initialValue;
+      }
+    }
+  }, {
     key: "executePromise",
     value: function executePromise() {
       var _this2 = this;
 
-      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._backedOptions || this.props;
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
 
       var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
           _ref$mixin = _ref.mixin,
@@ -103,12 +121,19 @@ function (_Component) {
       var _this$props = this.props,
           promise = _this$props.promise,
           then = _this$props.then;
-      this.setState({
-        pending: true,
-        skipped: false
-      });
-      this._backedOptions = mixin ? _objectSpread({}, options, this._backedOptions) : options;
-      promise(options, {
+      var _this$state = this.state,
+          pending = _this$state.pending,
+          skipped = _this$state.skipped;
+
+      if (!pending || skipped) {
+        this.setState({
+          pending: true,
+          skipped: false
+        });
+      }
+
+      this._backedOptions = mixin ? _objectSpread({}, this._backedOptions, options) : options;
+      return promise(mixin ? this._backedOptions : options, {
         replayed: replayed
       }).then(function (result) {
         if (typeof then === 'function') {
@@ -117,17 +142,15 @@ function (_Component) {
 
         _this2.setState({
           result: result,
-          error: null
+          error: null,
+          pending: false
         });
 
         return result;
       }).catch(function (error) {
         _this2.setState({
           error: error,
-          result: null
-        });
-      }).then(function () {
-        _this2.setState({
+          result: null,
           pending: false
         });
       });
@@ -156,6 +179,7 @@ function (_Component) {
     }
   }]);
 
-  return Promise;
+  return PromiseComponent;
 }(Component);
+PromiseComponent.displayName = 'PromiseComponent';
 //# sourceMappingURL=Promise.js.map
